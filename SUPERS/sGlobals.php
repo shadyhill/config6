@@ -23,9 +23,9 @@
 	setlocale(LC_MONETARY, 'en_US');
 	
 	//constants
-	define('CUR_URL', 'http://shsair.local/~shsair/git/Config6/');
-	define('S_CUR_URL', 'http://shsair.local/~shsair/git/Config6/');
-	define('FILE_PATH','/Users/shsair/Sites/git/Config6/');
+	define('CUR_URL', 'http://shsair.local/~shsair/git/config6/');
+	define('S_CUR_URL', 'http://shsair.local/~shsair/git/config6/');
+	define('FILE_PATH','/Users/shsair/Sites/git/config6/');
 	
 	
 	define('SALT',"ADD SALT HERE");

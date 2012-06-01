@@ -2,7 +2,7 @@
 
 include_once dirname(__FILE__)."/pagedata.php";
 include_once dirname(__FILE__)."/../SESSION/session.manager.php";
-include_once dirname(__FILE__)."/../OBJS/USERS/MANAGER/manager.php";
+include_once dirname(__FILE__)."/../OBJS/MANAGER/manager.php";
 /* include_once dirname(__FILE__)."/../OBJS/notifications.manager.php"; */
 
 class ManagerPageData extends PageData{

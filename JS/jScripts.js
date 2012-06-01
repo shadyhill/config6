@@ -1,5 +1,5 @@
-var cur_url = "http://shsair.local/~shsair/git/Config6/";
-var s_cur_url = "http://shsair.local/~shsair/git/Config6/";
+var cur_url = "http://shsair.local/~shsair/git/config6/";
+var s_cur_url = "http://shsair.local/~shsair/git/config6/";
 
 $.ajaxSetup ({  
     cache: false  
