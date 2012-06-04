@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__)."/session.php";
 
-include_once dirname(__FILE__)."/../OBJS/USERS/MANAGER/manager.php";
+include_once dirname(__FILE__)."/../OBJS/USERS/manager.php";
 
 class ManagerSession extends Session{
 	

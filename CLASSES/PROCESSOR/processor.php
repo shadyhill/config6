@@ -51,7 +51,7 @@ class Processor{
 			default: 	$path = '';
 		}
 		
-		$path .= strtoupper($obj)."/$obj.php";
+		$path .= "$obj.php";
 		
 		if(file_exists(FILE_PATH."CLASSES/OBJS/$path")){
 			include_once dirname(__FILE__)."/../OBJS/$path";
