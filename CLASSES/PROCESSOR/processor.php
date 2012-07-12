@@ -14,7 +14,7 @@ class Processor{
 	
 	protected $_urlVars;
 	protected $_url;
-	
+		
 	protected $_objIndex;		//this variable keeps track of what index to find the obj
 	protected $_fxIndex;		//this variable keeps track of what index to find the function
 		
@@ -51,11 +51,25 @@ class Processor{
 			default: 	$path = '';
 		}
 		
-		$path .= strtoupper($obj)."/$obj.php";
+		$path .= "$obj.php";
+		
+		//for compound classes
+		if(strpos($obj, ".") > 0){
+			$objNames = array_reverse(explode(".", $obj));
+			$first = true;
+			$newObj = "";
+			foreach($objNames as $on){
+				if($first){
+					$newObj .= $on;
+					$first = false;
+				}else $newObj .= ucfirst($on);
+			}
+			$obj = $newObj;
+		}
 		
 		if(file_exists(FILE_PATH."CLASSES/OBJS/$path")){
 			include_once dirname(__FILE__)."/../OBJS/$path";
-			$ref = new ReflectionClass(ucfirst($obj));				//to create dynamic obj from string we need to use reflection class
+			$ref = new ReflectionClass(ucfirst($obj));		//to create dynamic obj from string we need to use reflection class
 			$object = $ref->newInstance($this->_httpVars);			//then we copy that class to $object and pass the http vars
 			$processed = $object->{$fx}();							//and then we can call the function we want
 			
@@ -89,80 +103,8 @@ class Processor{
 	}
 	
 	protected function clean($word){
-		if (!is_array($word)) {
-			$word = mysql_real_escape_string(trim($word));
-		}
+		$word = mysql_real_escape_string(trim($word));
 		return $word;
-	}
-	
-	protected function onlyLetters($word){
-		$word = preg_replace("/[^a-zA-Z]/", "", $word);
-		return $word;
-	}
-	
-	protected function onlyNumbers($word){
-		$onlynums = preg_replace('/[^0-9]/','',$word);
-		return $onlynums;
-	}
-
-	protected function cleanFileName($name){
-		$name 		= mysql_real_escape_string(trim($name));
-		$name 		= strtolower(trim($name));
-
-		//characters that are  illegal on any of the 3 major OS's 
-		$reserved 	= preg_quote('\/:*?"<>|', '/');
-		
-		//replaces all characters up through space and all past ~ along with the above reserved characters 
-		return preg_replace("/([\\x00-\\x20\\x7f-\\xff{$reserved}])/e", "_", $name); 
-		
-	}
-	
-	protected function redirectPage($url, $page,$letter,$message){
-		header("Location: $url$page/?$letter=$message");
-		exit();
-	}
-
-	protected function explodeName($fullName) {
-		$suffixArray = array("II", "III", "IV", "V", "JR", "SR", "JR.", "SNR.","JNR", "SNR", "JUNIOR", "SENIOR");
-		
-		$nameArray = preg_split("/[\s]+/", $fullName);
-		$cnt = count($nameArray);
-		
-		// should never happen. Catch in validation or before function call
-		if ($cnt == 0) {
-			$lname = "";
-			$fname = "";
-		// should never happen. Catch in validation
-		} else if ($cnt == 1) {
-			$lname = $nameArray[0];
-			$fname = "";
-		} else if ($cnt == 2) {
-			$fname = $nameArray[0];
-			$lname = $nameArray[1];
-		} else if($cnt == 3){
-			$fname = $nameArray[0];
-			$mname = $nameArray[1];
-			$lname = $nameArray[2];
-		} else if ($cnt > 3) {
-			$last = $cnt-1;
-			$penult = $cnt-2;
-		
-			// We treat last word as a suffix if penultimate word ends in comma or if last word in suffix array
-			if ((strpos($nameArray[$penult],',')===TRUE) || in_array(strtoupper($nameArray[$last]), $suffixArray)){		
-				$lname = $nameArray[$penult] . " " . $nameArray[$last];
-				$end = $penult;
-			} else {
-				$lname = $nameArray[$last];
-				$end = $last;
-			}
-			
-			$fname = $nameArray[0];
-			for ($i=1; $i<$end; $i++){
-				$fname .= " " . $nameArray[$i];
-			}
-		}
-		
-		return array($fname,$lname,$mname);
 	}
 	
 	protected function fsockSend($url,$params){

@@ -1,4 +1,5 @@
 <?php 
+include_once dirname(__FILE__)."/../MARKDOWN/markdownify.php";
 
 class Forms{
 	
@@ -17,16 +18,23 @@ class Forms{
 	protected $_formEncoding;
 	protected $_formDisplayError;
 	
+	protected $_dbSelectMenus;
+	
 	protected $_submitTxt;
 	
 	protected $_formFields;
 	
+	protected $_markDownify;
 	
 	public function __construct($class = ""){
 		$this->_formIDs = array();
 		$this->_defaultWidth = 300;
 		if($class != "") $this->_class = $class;
 		else $this->_class = "input";
+		
+		$this->_markDownify = new Markdownify();
+		
+		$this->_dbSelectMenus = array();
 	}
 	
 	public function makeFromDB($name){
@@ -65,6 +73,10 @@ class Forms{
 		}
 	}
 	
+	public function addDBSelectMenu($index,$values,$displays){		
+		$this->_dbSelectMenu[$index] = array("values" => implode(",",$values),"displays" => implode(",",$displays));
+	}
+	
 	//renderDBForm will accept values as an associative array to handle existin values
 	public function renderDBForm($values = ""){
 		
@@ -80,10 +92,23 @@ class Forms{
 					$this->renderTextField($f["type"],$f["name_id"],$f["label"],$f["placeholder"],$value,$f["width"]);
 					break;
 				case "textarea":
-					$this->renderTextArea($f["label"],$f["name_id"],$f["placeholder"]);
+					$this->renderTextArea($f["label"],$f["name_id"],$f["placeholder"],$this->_markDownify->parseString($value),$f['width']);
 					break;
 				case "file":
 					$this->renderFileField($f['name_id'],$f['label']);
+					break;
+				case "hidden":
+					$this->renderHiddenField($f['name_id'],$value);
+					break;
+				case "selectmenu":
+					$this->renderSelectMenu($f['name_id'],$f['label'],$f['dd_displays'],$f['dd_values'],$value,$f['width']);
+					break;
+				case "dbselectmenu":
+					//db entry uses index in value and display fields
+					$index 		= $f['dd_displays'];
+					$dbDisplays = $this->_dbSelectMenu[$index]['displays'];
+					$dbValues 	= $this->_dbSelectMenu[$index]['values'];
+					$this->renderSelectMenu($f['name_id'],$f['label'],$dbDisplays,$dbValues,$value,$f['width']);
 					break;
 			}
 			
@@ -129,10 +154,6 @@ class Forms{
 		echo "class='$this->_formClass' ";
 	}
 	
-	
-	
-	
-	
 	protected function renderStart($action,$isFile = false){
 		echo "<form action='".S_CUR_URL."$action' method='post' id='".$this->_class."Form' ";
 		if($isFile) echo 'enctype="multipart/form-data" ';
@@ -168,7 +189,27 @@ class Forms{
 	}
 	
 	
-	protected function renderSelectMenu($id,$label,$list,$select = "",$width = ""){
+	protected function renderSelectMenu($id,$label,$displays,$values,$select = "",$width = ""){
+		if($width == "") $width = $this->_defaultWidth;
+		$this->_formIDs[] = $id;
+		$this->renderLabel($label,$id);
+		
+		$displays 	= explode(",",$displays);
+		$values 	= explode(",",$values);
+		
+		echo '<div class="'.$this->_class.'Div">';
+		echo '<select id="'.$id.'" name="'.$id.'" style="width: '.$width.'px;">';
+		foreach($displays as $key => $d){
+			echo '<option value="'.$values[$key].'"';
+			if($values[$key] == $select) echo 'selected="selected"';
+			echo '>'.$d.'</option>';
+		}
+		echo '</select>';
+		echo '</div>';
+
+	}
+	
+	protected function renderSelectMenuOld($id,$label,$list,$select = "",$width = ""){
 		if($width == "") $width = $this->_defaultWidth;
 		$this->_formIDs[] = $id;
 		$this->renderLabel($label,$id);
@@ -224,8 +265,5 @@ class Forms{
 	
 	
 }
-
-
-
 
 ?>

@@ -45,6 +45,30 @@ class Objs{
 		return preg_replace("/([\\x00-\\x20\\x7f-\\xff{$reserved}])/e", "_", $name); 
 		
 	}
+	
+	public function generateSlug($phrase){
+    	$result = strtolower($phrase);
+    	$result = preg_replace("/[^a-z0-9\s-]/", "", $result);
+    	$result = trim(preg_replace("/[\s-]+/", " ", $result));
+    	$result = preg_replace("/\s/", "-", $result);
+    	return $result;
+	}
+	
+	public function convertToActive($a){
+		if($a == 1) return "ACTIVE";
+		else return "INACTIVE";
+	}
+	
+	public function phoneFormat($word){
+		$phone = $word;
+		if(strlen($word) == 10) $phone = "(".substr($word, 0, 3).") ".substr($word, 3, 3)."-".substr($word, 6, 4);
+		else if(strlen($word) == 7) $phone = substr($word, 0, 3)."-".substr($word, 3, 4);
+		return $phone;
+	}
+	
+	public function emailClickable($word){
+		return "<a href='mailto:$word'>$word</a>";
+	}
 
 	protected function explodeName($fullName) {
 		$suffixArray = array("II", "III", "IV", "V", "JR", "SR", "JR.", "SNR.","JNR", "SNR", "JUNIOR", "SENIOR");

@@ -14,15 +14,24 @@ class MagicObjs extends Objs {
 		$this->_row = array();
 	}
 	
-	function makeFromID($id) {
+	public function makeFromID($id) {
 		$table = $this->_table;
 		$sql = "SELECT * FROM $table WHERE id = $id LIMIT 1;";
 		$res = mysql_query($sql);
 		$this->makeFromData(mysql_fetch_array($res));
 	}
 	
-	function makeFromData($row = array()) {
+	public function makeFromData($row) {
 		$this->_row = $row;
+		$this->formatMadeData();
+	}
+	
+	protected function formatMadeData(){
+		//this can be overriden
+	}
+	
+	function tableOverride($table){
+		$this->_table = mysql_real_escape_string($table);
 	}
 	
 	function __get($what) {
@@ -77,7 +86,9 @@ class MagicObjs extends Objs {
 			$sql .= $sqlB;
 			$sql .= ");";
 		}
-				
+		
+		//echo "the sql is $sql";
+		
 		// the actual query is anti-climactic
 		$res = mysql_query($sql);
 		return $res;
