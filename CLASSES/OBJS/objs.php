@@ -4,7 +4,7 @@ class Objs{
 	
 	//local variables
 	protected $_isValid;
-	protecetd $_mysqli;
+	protected $_mysqli;
 	
 	public function __construct(){
 		$this->_isValid = false;
