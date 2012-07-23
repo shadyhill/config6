@@ -1,7 +1,7 @@
 <?php 
 	include_once dirname(__FILE__)."/../../../OBJS/IOFILES/iofiles.php";
 	
-	$fID = mysql_real_escape_string(trim($this->_urlVars[1]));
+	$fID = $this->_mysqli->real_escape_string(trim($this->_urlVars[1]));
 	
 	$file = new Iofiles();
 	$file->makeFromID($fID);

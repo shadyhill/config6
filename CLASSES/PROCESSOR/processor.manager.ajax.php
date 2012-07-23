@@ -7,7 +7,8 @@ class AJAXManagerProcessor extends Processor{
 	//local class variables
 	
 	public function __construct($urlVars,$session){
-		parent::__construct($urlVars);
+		$mysqli = $session->returnMySQLi();
+		parent::__construct($mysqli, $urlVars);
 		
 		//need to advance the obj and fx index because we are at manager/AJAX/
 		$this->_objIndex 	= 2;	

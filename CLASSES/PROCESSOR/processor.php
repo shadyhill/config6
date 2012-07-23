@@ -17,8 +17,10 @@ class Processor{
 		
 	protected $_objIndex;		//this variable keeps track of what index to find the obj
 	protected $_fxIndex;		//this variable keeps track of what index to find the function
+	
+	protected $_mysqli;
 		
-	public function __construct($urlVars){
+	public function __construct($mysqli, $urlVars){
 		$this->_fxObj 		= new FX();
 		$this->_logObj 		= new Log();
 		$this->_httpVars 	= array();
@@ -103,7 +105,7 @@ class Processor{
 	}
 	
 	protected function clean($word){
-		$word = mysql_real_escape_string(trim($word));
+		$word = $this->_mysqli->real_escape_string(trim($word));
 		return $word;
 	}
 	

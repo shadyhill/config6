@@ -5,9 +5,14 @@ class Session{
 	//local class variables
 	protected $_prePost;
 	protected $_dir;
+	protected $_mysqli;
 	
 	public function __construct(){
 		$this->_sessionObjs = array();
+	}
+	
+	public function returnMySQLi(){
+		return $this->_mysqli;
 	}
 		
 	protected function setPrePost($prePost = "POST"){

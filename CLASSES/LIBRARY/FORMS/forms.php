@@ -1,7 +1,8 @@
 <?php 
+include_once dirname(__FILE__)."/../../OBJS/objs.php";
 include_once dirname(__FILE__)."/../MARKDOWN/markdownify.php";
 
-class Forms{
+class Forms extends Objs{
 	
 	//local class variables
 	protected $_formIDs;
@@ -27,6 +28,7 @@ class Forms{
 	protected $_markDownify;
 	
 	public function __construct($class = ""){
+		parent::__construct();
 		$this->_formIDs = array();
 		$this->_defaultWidth = 300;
 		if($class != "") $this->_class = $class;
@@ -34,7 +36,7 @@ class Forms{
 		
 		$this->_markDownify = new Markdownify();
 		
-		$this->_dbSelectMenus = array();
+		$this->_dbSelectMenus = array();		
 	}
 	
 	public function makeFromDB($name){
@@ -42,14 +44,14 @@ class Forms{
 		$this->_formFields = array();
 		$first = TRUE;
 		
-		$name = mysql_real_escape_string(trim($name));
+		$name = $this->_mysqli->real_escape_string(trim($name));
 		$sql = "SELECT * 
 					FROM forms f 
 					LEFT JOIN form_fields ff on f.id = ff.form_id 
 					WHERE f.form_name = '$name'
 					ORDER BY ff.f_order ASC";
-		$result = mysql_query($sql);
-		while($myrow = mysql_fetch_array($result)){
+		$result = $this->_mysqli->query($sql);
+		while($myrow = $result->fetch_array(MYSQLI_ASSOC)){
 			
 			//grab the form details
 			if($first){

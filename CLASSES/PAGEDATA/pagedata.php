@@ -18,10 +18,13 @@ abstract class PageData{
 	protected $_pageType;
 	protected $_templateType;
 	
+	protected $_mysqli;
+	
 	//constructor
-	public function __construct($urlVars){
+	public function __construct($mysqli, $urlVars){
+		$this->_mysqli 	= $mysqli;
 		$this->_urlVars = $urlVars;
-		$this->_url = mysql_real_escape_string(trim(implode("/",$this->_urlVars)));		//creates the string representation of the path for looking up in db
+		$this->_url 	= $this->_mysqli->real_escape_string(trim(implode("/",$this->_urlVars)));
 		
 		$this->_includeFile = "";
 		$this->_jsFiles = $this->_cssFiles = array();
@@ -79,8 +82,8 @@ abstract class PageData{
 				LEFT JOIN page_css pc on pd.page_url = pc.page_url
 				WHERE pd.page_url = '$page' AND pd.active = 1";
 				
-		$result = mysql_query($sql);
-		$myrow = mysql_fetch_array($result);
+		$result = $this->_mysqli->query($sql);
+		$myrow = $result->fetch_array(MYSQLI_ASSOC);
 		
 		$this->_includeFile = $myrow['include_file'];
 		$this->_pageType 	= $myrow['type'];

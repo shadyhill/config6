@@ -22,12 +22,12 @@ class AccountLog extends Log{
 	public function logLogin($user,$login){
 		$eUser = base64_encode(PTC_SALT.$user);
 		$sql = "INSERT $this->_loginTable (id, user, ip, sess_id, user_agent, status) values (0,'$eUser','$this->_ip','$this->_sessID','$this->_agent',$login)";
-		$result = mysql_query($sql);
+		$result = $this->_mysqli->query($sql);
 	}
 	
 	public function logAAction($user,$action){
 		$sql = "INSERT INTO $this->_actionTable (id, user_id, action) values (0,'$user','$action')";
-		$result = mysql_query($sql);
+		$result = $this->_mysqli->query($sql);
 	}
 	
 }

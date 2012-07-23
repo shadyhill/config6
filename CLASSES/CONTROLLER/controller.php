@@ -9,11 +9,13 @@ class Controller{
 	
 	protected $_url;
 	protected $_urlVars;
+	protected $_mysqli;
 	
 	//constructor
-	public function __construct(){
-		$this->_url = trim($_GET['url']);				//get the url variable out of GET (posted by htaccess)
+	public function __construct($mysqli){
+		$this->_url 	= trim($_GET['url']);				//get the url variable out of GET (posted by htaccess)
 		$this->_urlVars = explode("/",$this->_url);		//turn that into an array for easy parsing
+		$this->_mysqli  = $mysqli;
 	}
 	
 	/**
@@ -29,13 +31,13 @@ class Controller{
 
 		if($this->_urlVars[0] == "manager"){
 			include_once dirname(__FILE__)."/../SESSION/session.manager.php";
-			$this->_session = new ManagerSession();
+			$this->_session = new ManagerSession($this->_mysqli);
 		}else if($this->_urlVars[0] == "admin"){
 			include_once dirname(__FILE__)."/../SESSION/session.admin.php";
-			$this->_session = new AdminSession();
+			$this->_session = new AdminSession($this->_mysqli);
 		}else{
 			include_once dirname(__FILE__)."/../SESSION/session.general.php";
-			$this->_session = new GeneralSession();
+			$this->_session = new GeneralSession($this->_mysqli);
 		}
 
 		

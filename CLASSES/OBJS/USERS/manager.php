@@ -43,8 +43,8 @@ class Manager extends MagicObjs{
 			
 			//try to login with the credentials
 			$sql = "SELECT id, manager_id FROM manager_logins WHERE user = '$user' AND pass = '$ePass' AND active = 1";
-			$result = mysql_query($sql);
-			$myrow = mysql_fetch_array($result);
+			$result = $this->_mysqli->query($sql);
+			$myrow = $result->fetch_array(MYSQLI_ASSOC);
 						
 			
 			if($myrow['id'] > 0){

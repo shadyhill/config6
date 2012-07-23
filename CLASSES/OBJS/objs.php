@@ -4,9 +4,12 @@ class Objs{
 	
 	//local variables
 	protected $_isValid;
+	protecetd $_mysqli;
 	
 	public function __construct(){
 		$this->_isValid = false;
+		global $mysqli;
+		$this->_mysqli = $mysqli;
 	}
 	
 	public function isValid(){
@@ -20,7 +23,7 @@ class Objs{
 	}
 	
 	public function clean($word){
-		$word = mysql_real_escape_string(trim($word));
+		$word = $this->_mysqli->real_escape_string(trim($word));
 		return $word;
 	}
 	
@@ -35,7 +38,7 @@ class Objs{
 	}
 
 	public function cleanFileName($name){
-		$name 		= mysql_real_escape_string(trim($name));
+		$name 		= $this->_mysqli->real_escape_string(trim($name));
 		$name 		= strtolower(trim($name));
 
 		//characters that are  illegal on any of the 3 major OS's 

@@ -10,8 +10,8 @@ class AdminPageData extends PageData{
 	protected $_adminID;
 	
 	public function __construct($urlVars,$session){
-		
-		parent::__construct($urlVars);
+		$mysqli = $session->returnMySQLi();
+		parent::__construct($mysqli,$urlVars);
 		
 		$this->_sessionObj = $session;
 		$this->_adminID = $this->_sessionObj->returnSessionAdminID();

@@ -1,11 +1,13 @@
 <?php 
+include_once dirname(__FILE__)."/../../OBJS/objs.php";
+
 	
-class FX{
+class FX extends Objs{
 
 	//local class variables
 	
 	public function FX(){
-	
+		parent::__construct();
 	}
 
 	public function randID($n = 10){

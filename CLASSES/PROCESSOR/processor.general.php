@@ -8,7 +8,8 @@ class GeneralProcessor extends Processor{
 	//local class variables
 	
 	public function __construct($urlVars, $session){
-		parent::__construct($urlVars);
+		$mysqli = $session->returnMySQLi();
+		parent::__construct($mysqli, $urlVars);
 
 		$this->_sessionObj = $session;
 	}
