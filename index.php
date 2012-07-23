@@ -6,6 +6,6 @@
 	include_once dirname(__FILE__)."/CLASSES/CONTROLLER/controller.php";
 	
 	//create layout obj and render
-	$site = new Controller();
+	$site = new Controller($mysqli);
 	$site->control();
 ?>

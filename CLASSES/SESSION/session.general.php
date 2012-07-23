@@ -10,7 +10,7 @@ class GeneralSession extends Session{
 	protected $_auth;
 	protected $_activeURL;
 	
-	public function __construct($myslqi,$prePost = "POST"){
+	public function __construct($mysqli,$prePost = "POST"){
 		parent::__construct();
 		$this->_mysqli = $mysqli;
 		$this->_dir = "login";
