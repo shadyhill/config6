@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__)."/session.php";
 
-include_once dirname(__FILE__)."/../OBJS/USERS/ACCOUNT.php";
+include_once dirname(__FILE__)."/../OBJS/USERS/account.php";
 
 class GeneralSession extends Session{
 	

@@ -13,7 +13,7 @@ class ManagerSession extends Session{
 	
 	public function __construct($mysqli,$prePost = "POST"){
 		parent::__construct();
-		$this->_mysqli->$mysqli;
+		$this->_mysqli = $mysqli;
 		$this->_dir = "manager/login";
 		$this->_activeURL = S_CUR_URL;
 		$this->setPrePost($prePost);
