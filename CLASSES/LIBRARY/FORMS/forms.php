@@ -1,8 +1,7 @@
 <?php 
-include_once dirname(__FILE__)."/../../OBJS/objs.php";
 include_once dirname(__FILE__)."/../MARKDOWN/markdownify.php";
 
-class Forms extends Objs{
+class Forms{
 	
 	//local class variables
 	protected $_formIDs;
@@ -28,7 +27,6 @@ class Forms extends Objs{
 	protected $_markDownify;
 	
 	public function __construct($class = ""){
-		parent::__construct();
 		$this->_formIDs = array();
 		$this->_defaultWidth = 300;
 		if($class != "") $this->_class = $class;
@@ -36,7 +34,7 @@ class Forms extends Objs{
 		
 		$this->_markDownify = new Markdownify();
 		
-		$this->_dbSelectMenus = array();		
+		$this->_dbSelectMenus = array();
 	}
 	
 	public function makeFromDB($name){
@@ -44,14 +42,14 @@ class Forms extends Objs{
 		$this->_formFields = array();
 		$first = TRUE;
 		
-		$name = $this->_mysqli->real_escape_string(trim($name));
+		$name = mysql_real_escape_string(trim($name));
 		$sql = "SELECT * 
 					FROM forms f 
 					LEFT JOIN form_fields ff on f.id = ff.form_id 
 					WHERE f.form_name = '$name'
 					ORDER BY ff.f_order ASC";
-		$result = $this->_mysqli->query($sql);
-		while($myrow = $result->fetch_array(MYSQLI_ASSOC)){
+		$result = mysql_query($sql);
+		while($myrow = mysql_fetch_array($result)){
 			
 			//grab the form details
 			if($first){
@@ -97,13 +95,22 @@ class Forms extends Objs{
 					$this->renderTextArea($f["label"],$f["name_id"],$f["placeholder"],$this->_markDownify->parseString($value),$f['width']);
 					break;
 				case "file":
-					$this->renderFileField($f['name_id'],$f['label']);
+					$this->renderFileField($f['name_id'],$f['label'],$value);
 					break;
 				case "hidden":
 					$this->renderHiddenField($f['name_id'],$value);
 					break;
 				case "selectmenu":
 					$this->renderSelectMenu($f['name_id'],$f['label'],$f['dd_displays'],$f['dd_values'],$value,$f['width']);
+					break;
+				case "multiselect":
+					$this->renderMultiSelect($f['name_id'],$f['label'],$f['dd_displays'],$f['dd_values'],$value,$f['width']);
+					break;
+				case "dbmultiselect":
+					$index 		= $f['dd_displays'];
+					$dbDisplays = $this->_dbSelectMenu[$index]['displays'];
+					$dbValues 	= $this->_dbSelectMenu[$index]['values'];
+					$this->renderMultiSelect($f['name_id'],$f['label'],$dbDisplays,$dbValues,$value,$f['width']);
 					break;
 				case "dbselectmenu":
 					//db entry uses index in value and display fields
@@ -211,17 +218,26 @@ class Forms extends Objs{
 
 	}
 	
-	protected function renderSelectMenuOld($id,$label,$list,$select = "",$width = ""){
+	protected function renderMultiSelect($id,$label,$displays,$values,$select = "",$width = ""){
 		if($width == "") $width = $this->_defaultWidth;
 		$this->_formIDs[] = $id;
 		$this->renderLabel($label,$id);
 		
+		$displays 	= explode(",",$displays);
+		$values 	= explode(",",$values);
+		
+		$vals = array();
+
+		if($select != ""){
+			$vals = explode("~", $select);
+		}
+		
 		echo '<div class="'.$this->_class.'Div">';
-		echo '<select id="'.$id.'" name="'.$id.'" style="width: '.$width.'px;">';
-		foreach($list as $l){
-			echo '<option value="'.$l['value'].'"';
-			if($l['value'] == $select) echo 'selected="selected"';
-			echo '>'.$l['display'].'</option>';
+		echo '<select multiple="multiple" id="'.$id.'[]" name="'.$id.'[]" style="width: '.$width.'px; height: 70px;">';
+		foreach($displays as $key => $d){
+			echo '<option value="'.$values[$key].'"';
+			if(in_array($values[$key], $vals)) echo 'selected="selected"';
+			echo '>'.$d.'</option>';
 		}
 		echo '</select>';
 		echo '</div>';
@@ -257,15 +273,15 @@ class Forms extends Objs{
 		<?php 
 	}
 	
-	protected function renderFileField($id,$label){
+	protected function renderFileField($id,$label,$value = ""){
 		$this->_formIDs[] = $id;
 		$this->renderLabel($label,$id);
 		echo '<div class="'.$this->_class.'Div">';
 		echo "<input type='file' name='$id' style='margin-bottom:20px;' id='$id' />";
+		if($value != "") echo "<span> Current File: $value</span>";
 		echo '</div>';
 	}
-	
-	
+		
 }
 
 ?>
