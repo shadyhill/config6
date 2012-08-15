@@ -12,7 +12,7 @@ class ManagerPageData extends PageData{
 	
 	public function __construct($urlVars,$session){
 		$mysqli = $session->returnMySQLi();
-		parent::__construct($myslqi,$urlVars);
+		parent::__construct($mysqli,$urlVars);
 		
 		$this->_sessionObj 	= $session;
 		$this->_managerID 	= $this->_sessionObj->returnSessionManagerID();
