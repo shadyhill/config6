@@ -16,14 +16,9 @@ class Objs{
 		return $this->_isValid;
 	}
 	
-	
-	protected function cleanHTTPVariables(){		
-		foreach($_POST as $key => $value) 	$this->_httpVars["p$key"] = $this->clean($value);
-		foreach($_GET as $key => $value)	$this->_httpVars["g$key"] = $this->clean($value);
-	}
-	
-	public function clean($word){
-		$word = $this->_mysqli->real_escape_string(trim($word));
+	public function clean($word,$escape = false){
+		if($escape) $word = $this->_mysqli->real_escape_string(trim($word));
+		else $word = trim($word);
 		return $word;
 	}
 	
@@ -38,7 +33,6 @@ class Objs{
 	}
 
 	public function cleanFileName($name){
-		$name 		= $this->_mysqli->real_escape_string(trim($name));
 		$name 		= strtolower(trim($name));
 
 		//characters that are  illegal on any of the 3 major OS's 
@@ -47,6 +41,30 @@ class Objs{
 		//replaces all characters up through space and all past ~ along with the above reserved characters 
 		return preg_replace("/([\\x00-\\x20\\x7f-\\xff{$reserved}])/e", "_", $name); 
 		
+	}
+	
+	public function cleanMoney($amt){
+		$amts	= explode('.',$amt);
+		if((!isset($amts[1]) || $amts[1] == '')){
+			$amount = preg_replace('/[^0-9]/','',$amts[0]);
+		}else{
+			$amount = preg_replace('/[^0-9]/','',$amts[0]).'.'.$amts[1];
+		}
+		return $amount; 
+	}
+	
+	public function formatMoney($amt){
+		if($amt != ''){
+			$amts = explode('.',$amt);
+			if(count($amts)<2){
+				$amount = '$'.number_format(intval($amts[0])).'.00';
+			}else{
+				$amount = '$'.number_format(intval($amts[0])).'.'.$amts[1];
+			}
+			return $amount;
+		}else{
+		return '';		
+		}
 	}
 	
 	public function generateSlug($phrase){
@@ -71,6 +89,10 @@ class Objs{
 	
 	public function emailClickable($word){
 		return "<a href='mailto:$word'>$word</a>";
+	}
+	
+	public function renderLink($link,$display){
+		return '<a href="'.$link.'">'.$display.'</a>';
 	}
 
 	protected function explodeName($fullName) {
@@ -126,7 +148,9 @@ class Objs{
 		
 		$parts=parse_url($url);
 		
-		$fp = fsockopen($parts['host'],
+		//if ( $fp = fsockopen('ssl://' . $host, 443, $errno, $errstr, 30) ) {
+		
+		$fp = fsockopen('ssl://'.$parts['host'],
 		    isset($parts['port'])?$parts['port']:80,
 		    $errno, $errstr, 30);
 		
@@ -141,9 +165,37 @@ class Objs{
 		fwrite($fp, $out);
 		fclose($fp);
 
-
 	}	
 
+	public function randID($n = 10){
+		$pass="";
+		$chars = "23456789qwertyupasdfghjkzxcvbnmQWERTYUPASDFGHJKZXCVBNM";
+		$len = strlen($chars)-1;
+		for($k=0; $k<$n; $k++){
+			$num = rand(0,$len);
+			$letter = substr($chars,$num,1);
+			$pass .= $letter;
+		}	
+		return $pass;	
+	}
+	
+	
+
+	public function decodeDate($d){
+		if(($d != '')&&($d!='0000-00-00')){
+			return date('m/d/Y',strtotime($d));
+		}else{
+			return 'Not Set';
+		}
+	}
+	
+	public function encodeDate($d){
+		if(($d != '')&&($d!='0000-00-00')){
+			return date('Y-m-d',strtotime($d));
+		}else{
+			return '';
+		}
+	}
 
 }
 

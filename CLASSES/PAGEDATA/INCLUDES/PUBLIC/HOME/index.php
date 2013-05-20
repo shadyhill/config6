@@ -1,1 +1,1 @@
-welcome to slingm
+Welcome to CONFIG-6

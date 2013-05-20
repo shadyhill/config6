@@ -37,20 +37,24 @@ abstract class PageData{
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    
     <meta name="description" content="<?php echo $this->returnMeta('description');?>" />
     <meta name="keywords" content="<?php echo $this->returnMeta('keys');?>" />
     <meta name="author" content="Shady Hill Studios - www.shadyhillstudios.com" />      
     
     <title><?php echo $this->returnMeta('title');?></title>
     
-    <link href="<?php echo CUR_URL?>CSS/shs-reset.css" rel="stylesheet" type="text/css" />
-    <link href="<?php echo CUR_URL?>CSS/io.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap-responsive.min.css">
+    <link href="<?php echo A_URL?>CSS/site.css" rel="stylesheet" type="text/css" />
     <?php $this->renderCSS()?>
     
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,600,700" rel="stylesheet" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,700" rel="stylesheet" type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
     
-    <script src="<?php echo CUR_URL?>JS/jScripts.js" type="text/javascript"></script>
+    <script src="<?php echo A_URL?>JS/jScripts.js" type="text/javascript"></script>
     <?php $this->renderJS();?>
 </head>
 <?php flush();?>

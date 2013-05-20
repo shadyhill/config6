@@ -23,7 +23,7 @@ class Processor{
 	public function __construct($mysqli, $urlVars){
 		$this->_fxObj 		= new FX();
 		$this->_logObj 		= new Log();
-		$this->_httpVars 	= array();
+		$this->_hVars 		= array();
 		
 		$this->_urlVars 	= $urlVars;
 		$this->_url 		= implode("/",$this->_urlVars);
@@ -48,8 +48,7 @@ class Processor{
 			case "admin":	
 				$path = "USERS/";		
 				break;
-				
-			
+							
 			default: 	$path = '';
 		}
 		
@@ -71,9 +70,9 @@ class Processor{
 		
 		if(file_exists(FILE_PATH."CLASSES/OBJS/$path")){
 			include_once dirname(__FILE__)."/../OBJS/$path";
-			$ref = new ReflectionClass(ucfirst($obj));		//to create dynamic obj from string we need to use reflection class
-			$object = $ref->newInstance($this->_httpVars);			//then we copy that class to $object and pass the http vars
-			$processed = $object->{$fx}();							//and then we can call the function we want
+			$ref = new ReflectionClass(ucfirst($obj));							//to create dynamic obj from string we need to use reflection class
+			$object = $ref->newInstance($this->_hVars, $this->_sessionObj);		//then we copy that class to $object and pass the http vars
+			$processed = $object->{$fx}();										//and then we can call the function we want
 			
 			//tell the sub classes to figure out what to do next
 			$this->postProcess($processed);
@@ -100,12 +99,17 @@ class Processor{
 	  * Stores all variables in class variable $_httpVars which is an array
 	  */
 	protected function cleanHTTPVariables(){		
-		foreach($_POST as $key => $value) 	$this->_httpVars["p$key"] = $this->clean($value);
-		foreach($_GET as $key => $value)	$this->_httpVars["g$key"] = $this->clean($value);
+		foreach($_POST as $key => $value) 	$this->_hVars["p$key"] = $this->clean($value);
+		foreach($_GET as $key => $value)	$this->_hVars["g$key"] = $this->clean($value);
 	}
 	
-	protected function clean($word){
-		$word = $this->_mysqli->real_escape_string(trim($word));
+	/**
+	  * Because the default is to use prepared statements, 
+	  * real_escape_string is turned off by default
+	  */
+	protected function clean($word,$escape = false){
+		if($escape) $word = $this->_mysqli->real_escape_string(trim($word));
+		else $word = trim($word);
 		return $word;
 	}
 	
