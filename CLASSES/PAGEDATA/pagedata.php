@@ -53,6 +53,7 @@ abstract class PageData{
     
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,700" rel="stylesheet" type="text/css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+    <script src="<?php echo A_URL?>JS/D3/d3.v3.min.js" type="text/javascript"></script>
     
     <script src="<?php echo A_URL?>JS/jScripts.js" type="text/javascript"></script>
     <?php $this->renderJS();?>
@@ -123,7 +124,7 @@ abstract class PageData{
 			ksort($this->_cssFiles);
 			
 			//get the meta data
-			$this->_pageTitle 	= ($myrow['meta_title'] != "") 		 	? $myrow['meta_title'] 			: 'A Shady Hill Studios Website';
+			$this->_pageTitle 	= ($myrow['meta_title'] != "") 		 	? $myrow['meta_title'] 			: 'Edifio - Sheds with a Purpose';
 			$this->_metaDesc 	= ($myrow['meta_description'] != "") 	? $myrow['meta_description'] 	: 'Default description.';
 			$this->_metaKeys 	= ($myrow['meta_keywords'] != "")		? $myrow['meta_keywords']		: 'Default keywords';
 		}

@@ -1,1 +1,1 @@
-Welcome to CONFIG-6
+Welcome to Edifio
