@@ -53,7 +53,8 @@ abstract class PageData{
     
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,700" rel="stylesheet" type="text/css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-    <script src="<?php echo A_URL?>JS/D3/d3.v3.min.js" type="text/javascript"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- <script src="<?php echo A_URL?>JS/BOTH/deethreemin.js" charset="utf-8"></script> -->
     
     <script src="<?php echo A_URL?>JS/jScripts.js" type="text/javascript"></script>
     <?php $this->renderJS();?>
