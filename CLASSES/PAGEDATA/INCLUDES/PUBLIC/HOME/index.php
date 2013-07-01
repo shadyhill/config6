@@ -1,52 +1,89 @@
+<style>
+	svg {
+		shape-rendering: crispEdges;
+	}
+	
+	.axis path, .axis line {
+		fill: none;
+		stroke: #fff;
+	}
+	
+</style>
+
 <div id="drawing" style="width: 100%; height: 100%; position: absolute; background: rgb(244,244,244); overflow: hidden;">
 	
 </div>
 
 <script>
-	var width = $('#drawing').width(),
-    	height = $('#drawing').height(),
-    	fill = d3.scale.category20();		//not sure I want to use their color scale...
-    
-    width = 600;
-    height = 400;
-    
-   var x = d3.scale.identity().domain([0,600]);
-   var y = d3.scale.identity().domain([0,400]);
-    
-    var drawing = d3.select("#drawing")
-    	.append("svg:svg")
-    		.attr("class","axis")
-    		.attr("width", width)   
-    		.attr("height", height); 
-   
-   drawing.append("g")         
-        .attr("class", "grid")
-        .attr("transform", "translate(0," + height + ")")
-        .call(make_x_axis()
-            .tickSize(-height, 0, 0)
-            .tickFormat("")
-        )
+	var margin = {top: 10, right: 10, bottom: 10, left: 10};    
+    var width = 600;
+    var height = 400;
         
-    drawing.append("g")         
-        .attr("class", "grid")
-        .call(make_y_axis()
-            .tickSize(-width, 0, 0)
-            .tickFormat("")
-        )
+    var drawing = d3.select("#drawing")
+    	.append("svg:svg")    		
+    		.attr("width", width)   
+    		.attr("height", height);
    
-   function make_x_axis() {        
-    return d3.svg.axis()
-        .scale(x)
-//         .orient("bottom")
-         .ticks(5)
-}
+		
+	var x = d3.scale.linear()
+    	.domain([0,width/100])
+		.range([0, width]);
 
-function make_y_axis() {        
-    return d3.svg.axis()
-        .scale(y)
-//        .orient("left")
-        .ticks(5)
-}
+	var y = d3.scale.linear()
+    	.domain([0,height/50])
+		.range([height, 0]);
+
+	var xAxis = d3.svg.axis()
+    	.scale(x)
+		.orient("bottom")
+		.tickSize(-height);
+
+	var yAxis = d3.svg.axis()
+    	.scale(y)
+		.orient("left")
+		.tickSize(-width);
+	
+	drawing.append("g")
+    	.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+	
+	drawing.append("g")
+    	.attr("class", "y axis")
+		.call(yAxis);
+	
+	
+	/*
+drawing.append("svg:rect")
+		.attr("x",100)
+		.attr("y",100)
+		.attr("width",100)
+		.attr("height",100)
+		.attr("fill","#006699");
+*/
+
+	
+	//sets the hashes for every 50 over a range of the width?
+	/*
+var x = d3.scale.linear()
+			.domain([0, 50])
+			.range([0, width]);
+	
+	var y = d3.scale.linear()
+			.domain([0, 50]) 
+			.rangeRound([0, height]);
+	
+	drawing.append("g")
+		.data(d3.range(0,20))
+		.enter()
+			.append("svg:line")
+				.attr("y1", 0)
+				.attr("y2", height)
+				.attr("x1", x)
+				.attr("x2", x)
+*/
+				
+	
     /*
 drawing.selectAll("line.x")
     	.data(x.ticks(20))

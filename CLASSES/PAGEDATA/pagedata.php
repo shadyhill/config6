@@ -48,12 +48,13 @@ abstract class PageData{
     
     <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap-responsive.min.css">
-    <link href="<?php echo A_URL?>CSS/site.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="<?php echo A_URL?>CSS/FONT-AWESOME/css/font-awesome.min.css">
+    <link href="<?php echo A_URL?>CSS/edifio.css" rel="stylesheet" type="text/css" />
     <?php $this->renderCSS()?>
     
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,700" rel="stylesheet" type="text/css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<!--     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
     <!-- <script src="<?php echo A_URL?>JS/BOTH/deethreemin.js" charset="utf-8"></script> -->
     
     <script src="<?php echo A_URL?>JS/jScripts.js" type="text/javascript"></script>

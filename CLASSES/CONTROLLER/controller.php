@@ -68,7 +68,7 @@ class Controller{
 				}else{
 					
 					//verify the manager session
-					$this->_session->verifyManager();
+					//$this->_session->verifyManager();
 					
 					switch($this->_urlVars[1]){
 						case "PROCESS":
