@@ -1,3 +1,9 @@
+<?php
+	include_once dirname(__FILE__)."/../../../../../LIBRARY/FORMS/forms.php";
+	$form = new Forms();
+	$form->makeFromDB('m-settings-page-create');
+?>
+
 <div style="width: 100%; height: 36px; line-height: 36px; background : #636D75;"></div>
 <div style="width: 100%; height: 2px; background: #009ec3;"></div>
 
@@ -30,6 +36,10 @@
 				<li><a>link 2</a></li>
 			</ul>
 		</div>
-		<div class="span9" >stuff</div>
+		<div class="span9" >
+			<?php
+				$form->renderDBForm();
+			?>
+		</div>
 	</div>
 </div>

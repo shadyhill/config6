@@ -1,7 +1,8 @@
 <?php 
+include_once dirname(__FILE__)."/../../OBJS/magicobjs.php";
 include_once dirname(__FILE__)."/../MARKDOWN/markdownify.php";
 
-class Forms{
+class Forms extends MagicObjs{
 	
 	//local class variables
 	protected $_formIDs;
@@ -27,6 +28,8 @@ class Forms{
 	protected $_markDownify;
 	
 	public function __construct($class = ""){
+		parent::__construct('forms');
+		
 		$this->_formIDs = array();
 		$this->_defaultWidth = 300;
 		if($class != "") $this->_class = $class;
@@ -42,14 +45,21 @@ class Forms{
 		$this->_formFields = array();
 		$first = TRUE;
 		
-		$name = mysql_real_escape_string(trim($name));
 		$sql = "SELECT * 
 					FROM forms f 
 					LEFT JOIN form_fields ff on f.id = ff.form_id 
-					WHERE f.form_name = '$name'
+					WHERE f.form_name = ?
 					ORDER BY ff.f_order ASC";
-		$result = mysql_query($sql);
-		while($myrow = mysql_fetch_array($result)){
+		
+		$stmt = $this->_mysqli->prepare($sql);
+		
+		$stmt->bind_param('s',$formName);
+		$formName 	= $name;
+
+		$stmt->execute();
+		
+		$res = $stmt->get_result();
+		while($myrow = $res->fetch_array(MYSQLI_ASSOC)){
 			
 			//grab the form details
 			if($first){
@@ -62,6 +72,9 @@ class Forms{
 				$this->_formDisplayError 	= $myrow['has_error_field'];
 				$this->_formEncoding		= $myrow['encoding'];
 				$this->_submitTxt 			= $myrow['button_txt'];
+				$this->_preProcess			= $myrow['pre_process'];
+				$this->_postProcess			= $myrow['post_process'];
+				$this->_ajaxURL				= $myrow['ajax_url'];
 				
 				$first = FALSE;
 				
@@ -127,17 +140,30 @@ class Forms{
 		$this->renderSubmit($this->_submitTxt);
 		$this->renderEnd();
 		if($this->_formDisplayError) $this->renderFormE();
+		$this->renderJSHandler();
 	}
 	
 	//yeah, it just calls helper functions
 	protected function renderStartForm(){
 		echo "<form ";
+		$this->renderFormID();
 		$this->renderMethod();
 		$this->renderAction();
 		$this->renderOnSubmit();
 		$this->renderEncoding();
 		$this->renderClass();
 		echo ">";
+		$this->renderHiddenFormSettings();
+	}
+	
+	private function renderHiddenFormSettings(){
+		if($this->_preProcess != "") $this->renderHiddenField("pre_process",$this->_preProcess);
+		if($this->_postProcess != "") $this->renderHiddenField("prost_process",$this->_postProcess);
+		if($this->_ajaxURL != "") $this->renderHiddenField("ajax_url",$this->_ajaxURL);
+	}
+	
+	private function renderFormID(){
+		echo "id='$this->_formName' ";
 	}
 	
 	private function renderMethod(){
@@ -190,7 +216,7 @@ class Forms{
 	}
 	
 	protected function renderSubmit($label = "Submit"){
-		echo "<input type='submit' value='$label &raquo;' class='submit' />";
+		echo "<input type='submit' value='$label &rarr;' class='submit' />";
 	}
 	
 	protected function renderLabel($label,$target = ""){
@@ -280,6 +306,19 @@ class Forms{
 		echo "<input type='file' name='$id' style='margin-bottom:20px;' id='$id' />";
 		if($value != "") echo "<span> Current File: $value</span>";
 		echo '</div>';
+	}
+	
+	private function renderJSHandler(){
+		?>
+		<script>
+			function submitAJAX(){
+				var fData = $('#<?php echo $this->_formName?>').serialize();
+				console.log(fData);
+				
+				return false;
+			}
+		</script>
+		<?php 
 	}
 		
 }
