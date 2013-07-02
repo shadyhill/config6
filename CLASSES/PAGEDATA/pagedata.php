@@ -67,6 +67,21 @@ abstract class PageData{
 	
 	protected function endHTML(){
 		?>
+		<!-- handle submitting forms -->
+		<script>
+			function submitAJAX(el){				
+				var fData 	= $('#'+el.id).serialize();		//entire form
+				var url		= $('#ajax_url').val();			//url to post to
+				var pre		= $('#pre_process').val();		//pre processing function (if any)
+				var post	= $('#post_process').val();		//post processing function (if any)
+				
+				$.post("<?php echo S_CUR_URL?>"+url, fData, function(data) {
+					console.log("Data Loaded: " + data);
+				});
+				
+				return false;
+			}
+		</script>
 </body>
 </html>		
 		<?php 

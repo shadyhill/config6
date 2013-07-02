@@ -132,6 +132,15 @@ class Forms extends MagicObjs{
 					$dbValues 	= $this->_dbSelectMenu[$index]['values'];
 					$this->renderSelectMenu($f['name_id'],$f['label'],$dbDisplays,$dbValues,$value,$f['width']);
 					break;
+				case "checkbox":
+					$this->renderCheckbox($f['name_id'],$f['label'],$value);
+				break;
+				case "date":
+					$this->renderDateField($f["type"],$f["name_id"],$f["label"],$value,$f["width"]);
+				break;
+				case "money":
+					$this->renderTextField($f["type"],$f["name_id"],$f["label"],$f["placeholder"],$this->formatMoney($value),$f["width"]);
+				break;
 			}
 			
 			
@@ -140,7 +149,6 @@ class Forms extends MagicObjs{
 		$this->renderSubmit($this->_submitTxt);
 		$this->renderEnd();
 		if($this->_formDisplayError) $this->renderFormE();
-		$this->renderJSHandler();
 	}
 	
 	//yeah, it just calls helper functions
@@ -158,7 +166,7 @@ class Forms extends MagicObjs{
 	
 	private function renderHiddenFormSettings(){
 		if($this->_preProcess != "") $this->renderHiddenField("pre_process",$this->_preProcess);
-		if($this->_postProcess != "") $this->renderHiddenField("prost_process",$this->_postProcess);
+		if($this->_postProcess != "") $this->renderHiddenField("post_process",$this->_postProcess);
 		if($this->_ajaxURL != "") $this->renderHiddenField("ajax_url",$this->_ajaxURL);
 	}
 	
@@ -178,7 +186,7 @@ class Forms extends MagicObjs{
 	}
 	
 	private function renderOnSubmit(){
-		if($this->_formOnSubmit != "") echo "onsubmit='return $this->_formOnSubmit();' ";
+		if($this->_formOnSubmit != "") echo "onsubmit='return $this->_formOnSubmit(this);' ";
 	}
 	
 	private function renderEncoding(){
@@ -270,6 +278,22 @@ class Forms extends MagicObjs{
 
 	}
 	
+	public function renderCheckBox($id,$label,$value){
+		$this->renderLabel($label,$id);
+		?>
+		<div class="<?php echo $this->_class?>Div">
+		<?php
+		if($this->_multiObjs){
+			$id .= '-'.$this->_multiCount;	
+		}
+		if($value == 1){
+			echo '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" checked="checked" />';
+		}else{
+			echo '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1"  />';
+		}
+		echo '</div>';
+	}
+	
 	protected function renderHiddenField($id,$value){
 		$this->_formIDs[] = $id;
 		echo "<input type='hidden' name='$id' id='$id' value='$value' />";
@@ -308,18 +332,26 @@ class Forms extends MagicObjs{
 		echo '</div>';
 	}
 	
-	private function renderJSHandler(){
+	public function renderDateField($type,$id,$label, $value ="", $width = "", $right = false){
+		if($width == "") $width = $this->_defaultWidth;
+		$this->_formIDs[] = $id;				
+		$this->renderLabel($label,$id);
+		if($value == '0000-00-00'){
+			$value = "";
+		}
+		if(($value!='')&&($value!='0000-00-00')){
+			$value = date('m/d/Y',strtotime($value));
+		}
+		if($this->_multiObjs){
+			$id .= '-'.$this->_multiCount;	
+		}
 		?>
-		<script>
-			function submitAJAX(){
-				var fData = $('#<?php echo $this->_formName?>').serialize();
-				console.log(fData);
-				
-				return false;
-			}
-		</script>
+		<div class="<?php echo $this->_class?>Div">
+			<input type="text" name="<?php echo $id?>" id="<?php echo $id?>" value="<?php echo $value;?>" class="datepicker <?php echo $this->_class?>Txt <?php if($right) echo "aRight"; ?>" style="width: <?php echo $width?>px;"  />
+		</div>
 		<?php 
 	}
+	
 		
 }
 
