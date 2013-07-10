@@ -54,7 +54,7 @@ abstract class PageData{
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 -->
-    <link href="<?php echo A_URL?>CSS/edifio.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo A_URL?>CSS/site.css" rel="stylesheet" type="text/css" />
     <?php $this->renderCSS()?>
     
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,700" rel="stylesheet" type="text/css">
