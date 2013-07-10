@@ -1,6 +1,7 @@
 <?php 
 include_once dirname(__FILE__)."/../../OBJS/magicobjs.php";
 include_once dirname(__FILE__)."/../MARKDOWN/markdownify.php";
+include_once dirname(__FILE__)."/fields.php";
 
 class Forms extends MagicObjs{
 	
@@ -38,6 +39,7 @@ class Forms extends MagicObjs{
 		$this->_markDownify = new Markdownify();
 		
 		$this->_dbSelectMenus = array();
+		$this->_formFields = array();
 	}
 	
 	public function makeFromDB($name){
@@ -45,7 +47,7 @@ class Forms extends MagicObjs{
 		$this->_formFields = array();
 		$first = TRUE;
 		
-		$sql = "SELECT * 
+		$sql = "SELECT *
 					FROM forms f 
 					LEFT JOIN form_fields ff on f.id = ff.form_id 
 					WHERE f.form_name = ?
@@ -66,9 +68,9 @@ class Forms extends MagicObjs{
 				$this->_formName 			= $myrow['form_name'];
 				$this->_formAction 			= $myrow['action'];
 				$this->_formMethod 			= $myrow['method'];
-				$this->_formType 			= $myrow['type'];
+				$this->_formType 			= $myrow['form_type'];
 				$this->_formOnSubmit 		= $myrow['onsubmit'];
-				$this->_formClass 			= $myrow['class'];
+				$this->_formClass 			= $myrow['form_class'];
 				$this->_formDisplayError 	= $myrow['has_error_field'];
 				$this->_formEncoding		= $myrow['encoding'];
 				$this->_submitTxt 			= $myrow['button_txt'];
@@ -82,7 +84,9 @@ class Forms extends MagicObjs{
 			}
 			
 			//probably need to add a check to see if the fields are actually populated before adding them to the array
-			$this->_formFields[] = $myrow;
+			$field = new FormField();
+			$field->makeFromData($myrow);
+			$this->_formFields[] = $field;
 		}
 	}
 	
@@ -91,31 +95,18 @@ class Forms extends MagicObjs{
 	}
 	
 	//renderDBForm will accept values as an associative array to handle existin values
-	public function renderDBForm($values = ""){
+	public function renderDBForm($values = array()){
 		
 		$this->renderStartForm();
+		foreach($this->_formFields as $field){
+			$field->renderField($values[$field->name_id]);
+		}
 		
-		foreach($this->_formFields as $f){
-			if(isset($values[$f["name_id"]])) $value = $values[$f["name_id"]];
-			else $value = '';
+		/*
+foreach($this->_formFields as $f){
 			
 			switch($f["type"]){
-				case "text":
-				case "password":
-					$this->renderTextField($f["type"],$f["name_id"],$f["label"],$f["placeholder"],$value,$f["width"]);
-					break;
-				case "textarea":
-					$this->renderTextArea($f["label"],$f["name_id"],$f["placeholder"],$this->_markDownify->parseString($value),$f['width']);
-					break;
-				case "file":
-					$this->renderFileField($f['name_id'],$f['label'],$value);
-					break;
-				case "hidden":
-					$this->renderHiddenField($f['name_id'],$value);
-					break;
-				case "selectmenu":
-					$this->renderSelectMenu($f['name_id'],$f['label'],$f['dd_displays'],$f['dd_values'],$value,$f['width']);
-					break;
+				
 				case "multiselect":
 					$this->renderMultiSelect($f['name_id'],$f['label'],$f['dd_displays'],$f['dd_values'],$value,$f['width']);
 					break;
@@ -131,20 +122,18 @@ class Forms extends MagicObjs{
 					$dbDisplays = $this->_dbSelectMenu[$index]['displays'];
 					$dbValues 	= $this->_dbSelectMenu[$index]['values'];
 					$this->renderSelectMenu($f['name_id'],$f['label'],$dbDisplays,$dbValues,$value,$f['width']);
-					break;
-				case "checkbox":
-					$this->renderCheckbox($f['name_id'],$f['label'],$value);
-				break;
+					break;			
 				case "date":
 					$this->renderDateField($f["type"],$f["name_id"],$f["label"],$value,$f["width"]);
-				break;
+					break;
 				case "money":
 					$this->renderTextField($f["type"],$f["name_id"],$f["label"],$f["placeholder"],$this->formatMoney($value),$f["width"]);
-				break;
+					break;
 			}
 			
 			
 		}
+*/
 		
 		$this->renderSubmit($this->_submitTxt);
 		$this->renderEnd();
@@ -224,38 +213,18 @@ class Forms extends MagicObjs{
 	}
 	
 	protected function renderSubmit($label = "Submit"){
+		echo '<div class="control-group">';
+		echo '<div class="controls">';
 		echo "<input type='submit' value='$label &rarr;' class='submit' />";
-	}
-	
-	protected function renderLabel($label,$target = ""){
-		echo "<label for='$target'>$label</label>";
-	}
-	
-	
-	protected function renderSelectMenu($id,$label,$displays,$values,$select = "",$width = ""){
-		if($width == "") $width = $this->_defaultWidth;
-		$this->_formIDs[] = $id;
-		$this->renderLabel($label,$id);
-		
-		$displays 	= explode(",",$displays);
-		$values 	= explode(",",$values);
-		
-		echo '<div class="'.$this->_class.'Div">';
-		echo '<select id="'.$id.'" name="'.$id.'" style="width: '.$width.'px;">';
-		foreach($displays as $key => $d){
-			echo '<option value="'.$values[$key].'"';
-			if($values[$key] == $select) echo 'selected="selected"';
-			echo '>'.$d.'</option>';
-		}
-		echo '</select>';
 		echo '</div>';
-
+		echo '</div>';
 	}
+	
 	
 	protected function renderMultiSelect($id,$label,$displays,$values,$select = "",$width = ""){
 		if($width == "") $width = $this->_defaultWidth;
 		$this->_formIDs[] = $id;
-		$this->renderLabel($label,$id);
+		
 		
 		$displays 	= explode(",",$displays);
 		$values 	= explode(",",$values);
@@ -266,7 +235,11 @@ class Forms extends MagicObjs{
 			$vals = explode("~", $select);
 		}
 		
-		echo '<div class="'.$this->_class.'Div">';
+		?>
+		<div class="control-group">
+		<?php 
+		$this->renderLabel($label,$id);
+		echo '<div class="controls">';
 		echo '<select multiple="multiple" id="'.$id.'[]" name="'.$id.'[]" style="width: '.$width.'px; height: 70px;">';
 		foreach($displays as $key => $d){
 			echo '<option value="'.$values[$key].'"';
@@ -275,53 +248,15 @@ class Forms extends MagicObjs{
 		}
 		echo '</select>';
 		echo '</div>';
-
-	}
-	
-	public function renderCheckBox($id,$label,$value){
-		$this->renderLabel($label,$id);
-		?>
-		<div class="<?php echo $this->_class?>Div">
-		<?php
-		if($this->_multiObjs){
-			$id .= '-'.$this->_multiCount;	
-		}
-		if($value == 1){
-			echo '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" checked="checked" />';
-		}else{
-			echo '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1"  />';
-		}
 		echo '</div>';
+
 	}
 	
 	protected function renderHiddenField($id,$value){
 		$this->_formIDs[] = $id;
 		echo "<input type='hidden' name='$id' id='$id' value='$value' />";
 	}
-	
-	protected function renderTextField($type,$id,$label,$placeholder = "", $value = "", $width = ""){
-		if($width == "") $width = $this->_defaultWidth;
-		$this->_formIDs[] = $id;
-		$placeholder = htmlentities(stripslashes($placeholder), ENT_QUOTES);				
-		$this->renderLabel($label,$id);
-		?>
-		<div class="<?php echo $this->_class?>Div">
-			<input type="<?php echo $type?>" name="<?php echo $id?>" id="<?php echo $id?>" value="<?php echo $value?>" placeholder="<?php echo $placeholder?>" class="<?php echo $this->_class?>Txt <?php if($right) echo "aRight"; ?>" style="width: <?php echo $width?>px;"  />
-		</div>
-		<?php 
-	}
-	
-	protected function renderTextArea($label,$id,$placeholder = "", $value = "", $width = ""){
-		if($width == "") $width = $this->_defaultWidth;
-		$this->_formIDs[] = $id;
-		$this->renderLabel($label,$id);
-		$placeholder = htmlentities(stripslashes($placeholder), ENT_QUOTES);	
-		?>
-		<div class="<?php echo $this->_class?>Div">			
-			<textarea id="<?php echo $id?>" name="<?php echo $id?>" placeholder="<?php echo $placeholder?>" class="<?php echo $this->_class."TxtArea"?>" style="width: <?php echo $width."px;"?>"><?php echo $value?></textarea>
-		</div>
-		<?php 
-	}
+		
 	
 	protected function renderFileField($id,$label,$value = ""){
 		$this->_formIDs[] = $id;

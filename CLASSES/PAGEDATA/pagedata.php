@@ -49,6 +49,11 @@ abstract class PageData{
     <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo A_URL?>CSS/BOOTSTRAP/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="<?php echo A_URL?>CSS/FONT-AWESOME/css/font-awesome.min.css">
+    
+<!--
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+-->
     <link href="<?php echo A_URL?>CSS/edifio.css" rel="stylesheet" type="text/css" />
     <?php $this->renderCSS()?>
     
@@ -77,6 +82,12 @@ abstract class PageData{
 				
 				$.post("<?php echo S_CUR_URL?>"+url, fData, function(data) {
 					console.log("Data Loaded: " + data);
+					data = JSON.parse(data);
+					if(data.status == "success"){
+						if(data.action == "redirect"){
+							linkAPage(data.url);
+						}
+					}
 				});
 				
 				return false;

@@ -1,32 +1,65 @@
-body{font-family: 'Open Sans', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 18px; color: #222; margin: 0px; padding: 0px;}
+body{font-family: 'Open Sans', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 18px; color: #222; margin: 0px; padding: 0px; font-weight: 300px;}
 
-p{margin-bottom: 15px;}
+p{margin-bottom: 15px; line-height: 20px; font-weight: 300px;}
 
-a{color: #003399; text-decoration: underline;}
-a:hover{text-decoration: none;}
+a{color: #003399; text-decoration: none;}
+a:hover{text-decoration: underline;}
 
 h1{}
 h2{}
 
 /*manager layout*/
+#mContent h1{font-size: 18px; line-height: 24px; font-weight: 400; margin-top: 0px; }
+#mContent h2{font-size: 16px; line-height: 21px; font-weight: 400; margin-bottom: 10px; border-bottom: 1px solid #DDD;}
+#mContent h2 a{font-size: 12px; line-height: 21px; font-weight: 300; }
+#mContent h2 a.pull-right{padding-left: 10px;}
+
 /* #managerNav .nav li{padding: 0px 10px;} */
 #managerNav .nav a{border-top: 2px solid transparent; border-bottom: 3px solid transparent; display: inline-block;}
 #managerNav .nav a:hover{border-top: 2px solid rgb(240,240,240);}
 #managerNav .nav a.active{border-top: 2px solid #009ec3; background: rgb(250,250,250);}
 /* #managerNav .nav .divider-vertical{margin: 0px;} */
 
-/*forms*/
-.defaultForm{}
-.defaultForm label{display: block; float: left; width: 150px; text-align: right; padding-right: 20px; line-height: 28px; font-size: 12px; color: #222; padding-left: 1px; }
-.defaultForm .inputTxt{border: 1px solid #222; line-height: 20px; height: 20px; padding: 2px; font-size: 13px; color: #222; width: 260px; margin-bottom: 20px;}
-.defaultForm .inputTxtArea{border: 1px solid #222; line-height: 20px; height: 100px; padding: 2px; font-size: 13px; color: #222; width: 260px; margin-bottom: 20px; font-weight: 300;}
-.defaultForm .submit{margin-left: 170px; display: block; background: #000; color: #FFF; border: none; text-align: center; height: 26px; font-size: 12px; letter-spacing: 1px; cursor: pointer; line-height: 22px; padding: none; min-width: 120px; margin-bottom: 12px;}
-.defaultForm .submit:hover{background: #999; color: #000;}
+/* .mSideNav .nav a{border-bottom: 1px solid #EFEFEF;} */
+
+
+
+/*bootstrap overrides*/
+i.icon-large{padding-right: 6px;}
+dt, dd{line-height: 24px; }
+dt:nth-child(even) {background: #CCC}
+
+/*bootstrap forms*/
+.form-horizontal .control-label{text-align: left; padding-left: 10px; font-size: 13px; font-weight: 300; color: #666;}
+.form-horizontal .control-group{margin-bottom: 12px;}
+
+/*managerDorm style*/
+.managerForm{padding-left: 10px;}
+.managerForm .inputDiv{margin-bottom: 8px;}
+.managerForm label{display: block; float: left; width: 150px; line-height: 20px; padding-right: 20px; text-align: left;}
+.managerForm .submit{margin-left: 170px;}
+
+
+
+
+
+
 #formE{font-size: 12px; color: red; padding-left: 2px;}
 
-/*colors*/
-.greyC{color: #CCC;} .grey9{color: #999;} .grey6{color: #666;} .grey3{color: #333;} .white{color: #FFF;} .black{color: #000;}
-.red{color: red;}
+
+/*dataTables*/
+.dataTables_filter{text-align: right;}
+.dataTables_paginate{text-align: right;}
+
+table.table thead .sorting,
+table.table thead .sorting_asc,
+table.table thead .sorting_desc,
+table.table thead .sorting_asc_disabled,
+table.table thead .sorting_desc_disabled {
+    cursor: pointer;
+    *cursor: hand;
+}
+
 
 
 ::-webkit-input-placeholder {

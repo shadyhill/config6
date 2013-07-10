@@ -95,6 +95,11 @@ class Objs{
 		return '<a href="'.$link.'">'.$display.'</a>';
 	}
 
+	public function makeOneOrZero($word){
+		if($word != 1) $word = 0;
+		return $word;
+	}
+
 	protected function explodeName($fullName) {
 		$suffixArray = array("II", "III", "IV", "V", "JR", "SR", "JR.", "SNR.","JNR", "SNR", "JUNIOR", "SENIOR");
 		
